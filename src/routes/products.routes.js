@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { uploader } from '../utils/multer.js'
 import productDao from '../dao/productDao.js'
+import { productModel } from '../dao/models/products.models.js'
 
 // ☐ IMPLEMENTAR MONGO PARA REGISTRAR TODO POR ATLAS
 
@@ -10,11 +11,17 @@ const router = Router()
 
 // METODO GET PARA LISTAR PRODUCTOS
 router.get('/', async (req, res) => {
+
   let limit = parseInt(req.query.limit)
+  let result = await productDao.getProducts(limit)
   try {
-    res.json(await productDao.getProducts(limit));
+    res.json(
+      {
+        status: 'success',
+        payload: result,
+      })
   } catch (error) {
-   res.json({error}) 
+    res.json({ error })
   }
 })
 
@@ -24,7 +31,7 @@ router.get('/:pid', async (req, res) => {
   try {
     res.json(await productDao.getProductById(pid))
   } catch (error) {
-   res.json({error}) 
+    res.json({ error })
   }
 })
 
@@ -47,20 +54,20 @@ router.put('/:pid', async (req, res) => {
   const pid = (req.params.pid)
   const updatedValue = req.body
   try {
-  await productDao.updateProduct(pid, updatedValue)
-  res.send({ status: 200, payload: updatedValue })
+    await productDao.updateProduct(pid, updatedValue)
+    res.send({ status: 200, payload: updatedValue })
   } catch (error) {
-   res.json({error}) 
+    res.json({ error })
   }
 })
 
 router.delete('/:pid', async (req, res) => {
   let pid = (req.params.pid)
   try {
-   await productDao.deleteProduct(pid) 
-  res.json({status:200, message:'Producto producto eliminado'})
+    await productDao.deleteProduct(pid)
+    res.json({ status: 200, message: 'Producto producto eliminado' })
   } catch (error) {
-   res.json({error}) 
+    res.json({ error })
   }
 })
 
