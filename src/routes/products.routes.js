@@ -13,7 +13,11 @@ const router = Router()
 router.get('/', async (req, res) => {
 
   let limit = parseInt(req.query.limit)
-  let result = await productDao.getProducts(limit)
+  let query = JSON.parse(req.query.query)
+  let sort = parseInt(req.query.sort)
+  let page = parseInt(req.query.page)
+
+  let result = await productDao.getProducts(limit, query, sort, page)
   try {
     res.json(
       {
