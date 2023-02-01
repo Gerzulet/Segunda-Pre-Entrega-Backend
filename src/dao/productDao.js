@@ -2,13 +2,13 @@ import { productModel } from '../dao/models/products.models.js'
 
 class productDao {
 
-  async getProducts(limit) {
-      if (limit === 0 || !limit) {
-        return await productModel.find({})
-      } else {
-        return await productModel.find({}).limit(limit);
+  async getProducts(limit, query, sort, page) {
+    if ((limit === 0 || !limit)) {
+      return await productModel.paginate({query}, {paginate:false, page:page || 1, sort: {price:sort || 0}})
+    } else {
+      return await productModel.paginate({query}, {limit:limit || false, page:page || 1, sort: {price:sort || 0}})
     }
-  }
+  } 
 
 
   async getProductById(id) {
