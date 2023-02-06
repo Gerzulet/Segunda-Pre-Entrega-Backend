@@ -4,10 +4,8 @@ class productDao {
 
   async getProducts(limit, query, sort, page) {
     if ((limit === 0 || !limit)) {
-      return await productModel.paginate({query}, {paginate:false, page:page || 1, sort: {price:sort || 0}})
+      return await productModel.paginate(query, {paginate:false, page:page || 1, sort: {price:sort || 0}})
     } else {
-      console.log(query)
-      console.log(typeof(query))
       return await productModel.paginate(query, {limit:limit || false, page:page || 1, sort: {price:sort || 0}})
     }
   } 

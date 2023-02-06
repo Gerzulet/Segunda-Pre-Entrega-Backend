@@ -13,19 +13,20 @@ const router = Router()
 router.get('/', async (req, res) => {
 
   let limit = parseInt(req.query.limit)
-  let query = JSON.parse(req.query.query)
+  // let query = JSON.parse(req.query.query) 
+  let query = req.query.query || null
   let sort = parseInt(req.query.sort)
   let page = parseInt(req.query.page)
 
-  let result = await productDao.getProducts(limit, query, sort, page)
   try {
+    let result = await productDao.getProducts(limit, JSON.parse(query), sort, page)
     res.json(
       {
         status: 'success',
         payload: result,
       })
   } catch (error) {
-    res.json({ error })
+    res.json({ message: 'Ha ocurrido un error, verifique bien los datos ingresados' })
   }
 })
 
@@ -38,6 +39,8 @@ router.get('/:pid', async (req, res) => {
     res.json({ error })
   }
 })
+
+
 
 router.post('/', uploader.single('thumbnail'), async (req, res) => {
   const { title, description, category, price, thumbnail, code, stock } = req.body;

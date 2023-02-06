@@ -7,9 +7,10 @@ import cartRoutes from './src/routes/carts.routes.js'
 import mongoose from 'mongoose'
 import __dirname from './dirname.js'
 import chatDao from './src/dao/chatDao.js'
+import Handlebars from 'handlebars'
 import path from 'path'
 import { Server } from 'socket.io'
-
+import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access'
 const app = express()
 
 app.use(express.json())
@@ -23,8 +24,9 @@ const io = new Server(httpServer)
 
 // CONFIGURACION DE HANDLEBARS ✅ 
 app.engine('hbs', handlebars.engine({
-  extname: 'hbs', 
-  defaultLayout: 'main'
+  extname: 'hbs',
+  defaultLayout: 'main',
+  handlebars: allowInsecurePrototypeAccess(Handlebars)
 }))
 app.set('views', __dirname + '/src/views')
 app.set('view engine', 'hbs')
@@ -54,13 +56,13 @@ io.on('connection', async (socket) => {
 
   socket.on("mensajeNuevo", async (data) => {
     let message = {
-      user : data.user, 
+      user: data.user,
       message: data.message
     }
     await chatDao.registerMessage(message)
     io.emit("historialChat", await chatDao.getMessages())
 
- })
+  })
 
 
 })
